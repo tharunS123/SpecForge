@@ -1,0 +1,125 @@
+{
+  "original_request": "Build me an iPhone expense tracker. I want to add expenses with an amount, a category, a date and an optional note, and be able to edit or delete them. Show the total for the current month and a breakdown by category as a chart. Let me set a monthly budget and warn me when I go over it. My data should stay on my phone — no account, no cloud. I also want to export a month's expenses to a CSV file.",
+  "current_spec": "# Expense Tracker — Implementation Specification\n\n## 1. Overview\nA native iPhone app for recording personal expenses, seeing the current month's total and category breakdown, tracking a monthly budget, and exporting a month to CSV. All data stays on the device.\n\n## 2. Scope\nIn scope: add/edit/delete expenses, monthly total, category chart, monthly budget warning, CSV export.\nOut of scope: accounts, cloud sync, multiple currencies, recurring expenses.\n\n## 3. Requirements\n- R1: User can add an expense with amount, category, date, and optional note.\n- R2: User can edit an expense.\n- R3: User can delete an expense.\n- R4: App shows the total for the current month.\n- R5: App shows a category breakdown chart for the current month.\n- R6: User can set a monthly budget.\n- R7: App warns the user when the month's total exceeds the budget.\n- R8: Data is stored only on the device; no account or cloud.\n- R9: User can export a month's expenses as CSV.\n\n## 4. Architecture\nSwiftUI views on top of a SwiftData store. Views read expenses with `@Query`. A `BudgetService` compares the monthly total with the budget. A `CSVExporter` builds the CSV file and hands it to the system share sheet.\n\n## 5. Tech stack\nSwift 5.10, SwiftUI, SwiftData (iOS 17+), Swift Charts for the chart. No third-party dependencies.\n\n## 6. Data model\n- `Expense`: id (UUID), amount (Decimal), category (Category), date (Date), note (String?).\n- `Category`: name (String), colorHex (String). Default categories: Food, Transport, Housing, Entertainment, Other.\n- Budget: stored as a Decimal in UserDefaults.\n\n## 7. Screens & UX states\n- **Expenses tab** — list of this month's expenses, newest first, with the month total at the top. Swipe to delete, tap to edit. \"+\" button opens the add sheet. If there are no expenses, show \"No expenses yet\".\n- **Add/Edit sheet** — amount, category picker, date picker, note field, Save and Cancel.\n- **Summary tab** — month total, budget progress bar, and a pie chart by category. Red banner when over budget.\n- **Settings tab** — monthly budget field and \"Export this month as CSV\" button.\n\n## 8. Implementation plan\n1. Create the Xcode project with SwiftData and the tab bar.\n2. Add the `Expense` and `Category` models and seed default categories.\n3. Build the Expenses tab and Add/Edit sheet.\n4. Build the Summary tab with Swift Charts.\n5. Add the budget setting and warning.\n6. Add CSV export through `ShareLink`.\n\n## 9. Errors & edge cases\nShow an alert if saving fails. The amount must be greater than zero.\n\n## 10. Security & privacy\nAll data is stored locally in SwiftData; nothing is sent over the network.\n\n## 11. Testing & acceptance criteria\nUnit tests for `BudgetService` and `CSVExporter` with XCTest.\n- AC-1: Given no expenses, when the user adds an expense of 12.50 in Food, then it appears in the list and the month total shows 12.50. (R1, R4)\n- AC-2: Given a budget of 100 and expenses totalling 90, when the user adds an expense of 20, then the Summary tab shows the over-budget banner. (R6, R7)\n- AC-3: When the user taps Export, a CSV file with one row per expense this month is offered in the share sheet. (R9)\n\n## 12. Assumptions & open questions\n- Assumption: currency comes from the device locale.\n- Assumption: weeks and months follow the device calendar.\n",
+  "spec_version": 1,
+  "forge_score": 70.39,
+  "forge_score_raw": 70.39,
+  "mode": "targeted",
+  "critical": [],
+  "weak": [
+    {
+      "category": "edge_cases",
+      "name": "Edge cases & errors",
+      "score": 43.75,
+      "failing_checks": [
+        {
+          "id": "edge.error_handling",
+          "points": 0.375,
+          "answer_summary": "generic (confidence 0.47)",
+          "fix_hint": "List each operation that can fail and state the user-visible message, whether data is kept, and how the user recovers."
+        },
+        {
+          "id": "edge.input_validation",
+          "points": 0.5,
+          "answer_summary": "noul 0.45",
+          "fix_hint": "For each input field, state required or optional, allowed format and range, and the exact error shown when invalid."
+        }
+      ]
+    },
+    {
+      "category": "security",
+      "name": "Security & privacy",
+      "score": 50,
+      "failing_checks": [
+        {
+          "id": "sec.data_privacy",
+          "points": 0.5,
+          "answer_summary": "partial (confidence 0.7)",
+          "fix_hint": "State what sensitive data is collected, where and how it is stored, who can read it (access rules), and how a user deletes it."
+        }
+      ]
+    },
+    {
+      "category": "data_model",
+      "name": "Data model",
+      "score": 52.83,
+      "failing_checks": [
+        {
+          "id": "data.entities",
+          "points": 0.685,
+          "answer_summary": "partial (confidence 0.6)",
+          "fix_hint": "Add a Data model section with every entity, each field's name and type, whether it is required, and its default value."
+        },
+        {
+          "id": "data.relationships",
+          "points": 0.45,
+          "answer_summary": "partial (confidence 0.6)",
+          "fix_hint": "For each pair of related entities, state the cardinality and what happens on delete (cascade, block, or nullify)."
+        },
+        {
+          "id": "data.persistence_migration",
+          "points": 0.45,
+          "answer_summary": "storage_only (confidence 0.85)",
+          "fix_hint": "Name the storage technology and describe the schema versioning or migration approach for future releases."
+        }
+      ]
+    },
+    {
+      "category": "testing",
+      "name": "Testing & acceptance",
+      "score": 61.2,
+      "failing_checks": [
+        {
+          "id": "test.strategy",
+          "points": 0.405,
+          "answer_summary": "minimal (confidence 0.53)",
+          "fix_hint": "Add a testing strategy: test frameworks, which units, integrations, and UI flows are tested, and which failure cases have tests."
+        },
+        {
+          "id": "test.ac_count",
+          "points": 0.6,
+          "answer_summary": "{\"count\":3}",
+          "fix_hint": "Add at least 5 acceptance criteria labelled AC-1, AC-2, … covering every core flow."
+        }
+      ]
+    },
+    {
+      "category": "implementation",
+      "name": "Implementation specificity",
+      "score": 69.83,
+      "failing_checks": [
+        {
+          "id": "impl.file_structure",
+          "points": 0.425,
+          "answer_summary": "module_level (confidence 0.33)",
+          "fix_hint": "Add a file tree with concrete paths and one line per file describing what it contains."
+        },
+        {
+          "id": "impl.guessing_required",
+          "points": 0.5333,
+          "answer_summary": "score 1.6",
+          "fix_hint": "Replace every vague phrase ('handle', 'support', 'nice UI', 'as needed') with the concrete decision: which library, which fields, which behavior, which limit."
+        }
+      ]
+    }
+  ],
+  "strong": [
+    {
+      "category": "requirements",
+      "name": "Requirements coverage",
+      "score": 92.7
+    },
+    {
+      "category": "dependencies",
+      "name": "Dependency coherence",
+      "score": 98.93
+    }
+  ],
+  "uncovered_requirements": [
+    {
+      "id": "R10",
+      "text": "User can export a chosen month's expenses to a CSV file.",
+      "status": "uncertain"
+    }
+  ]
+}

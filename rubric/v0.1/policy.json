@@ -1,0 +1,155 @@
+{
+  "$schema": "../../schemas/policy.schema.json",
+  "policy_version": "0.1.0",
+  "rubric_version": "0.1.0",
+  "description": "Deterministic scoring, critical-failure, pass/fail, and optimization-loop policy for rubric 0.1.0. All numbers are initial guesses to be calibrated in Phase 1.",
+  "category_weights": {
+    "requirements": 15,
+    "architecture": 10,
+    "implementation": 12,
+    "data_model": 10,
+    "ui_ux": 10,
+    "edge_cases": 10,
+    "security": 8,
+    "testing": 12,
+    "dependencies": 5,
+    "build_readiness": 8
+  },
+  "gates": {
+    "applies_at": 0.5
+  },
+  "noul": {
+    "pass_at": 0.7,
+    "fail_at": 0.3,
+    "pass_points": 1.0,
+    "fail_points": 0.0,
+    "uncertain_points": 0.5
+  },
+  "choice": {
+    "scoring": "expected_value",
+    "not_applicable_at": 0.5,
+    "low_confidence_below": 0.4
+  },
+  "score": {
+    "scoring": "linear",
+    "low_confidence_below": 0.4
+  },
+  "requirements": {
+    "max_extracted": 25,
+    "evaluate_kinds": ["explicit"],
+    "require_source_quote_match": true
+  },
+  "preflight": {
+    "max_spec_tokens": 24000,
+    "token_estimate": "chars_div_4",
+    "required_sections": [
+      "Overview",
+      "Scope",
+      "Requirements",
+      "Architecture",
+      "Tech stack",
+      "Data model",
+      "Screens & UX states",
+      "Implementation plan",
+      "Errors & edge cases",
+      "Security & privacy",
+      "Testing & acceptance criteria",
+      "Assumptions & open questions"
+    ],
+    "section_heading_pattern": "^#{1,3}\\s*(\\d+\\.?\\s*)?{section}\\b"
+  },
+  "critical_rules": [
+    {
+      "id": "crit.spec_too_long",
+      "source": { "preflight": "spec_tokens" },
+      "when": { "above": 24000 },
+      "message": "The specification is too long for reliable evaluation (over ~24,000 tokens). Tighten it: remove repetition and prose, keep decisions."
+    },
+    {
+      "id": "crit.requirement_coverage",
+      "source": { "check": "req.explicit_coverage" },
+      "when": { "ratio_below": 0.8 },
+      "message": "Fewer than 80% of the user's explicit requirements are clearly addressed."
+    },
+    {
+      "id": "crit.coverage_overall",
+      "source": { "check": "req.coverage_overall" },
+      "when": { "options": ["major_gaps", "insufficient"], "min_probability": 0.5 },
+      "message": "The specification is missing features or constraints the user clearly asked for."
+    },
+    {
+      "id": "crit.no_testing",
+      "source": { "check": "test.strategy" },
+      "when": { "options": ["missing"], "min_probability": 0.5 },
+      "message": "There is no testing strategy."
+    },
+    {
+      "id": "crit.ui_states_missing",
+      "source": { "check": "ui.states" },
+      "when": { "options": ["missing"], "min_probability": 0.5 },
+      "message": "Loading, empty, and error states are not defined for any screen."
+    },
+    {
+      "id": "crit.auth_states_missing",
+      "source": { "check": "sec.auth_states" },
+      "when": { "options": ["missing"], "min_probability": 0.5 },
+      "message": "The product has user accounts, but sign-in behavior is not specified."
+    },
+    {
+      "id": "crit.no_entities",
+      "source": { "check": "data.entities" },
+      "when": { "options": ["missing", "names_only"], "min_probability": 0.5 },
+      "requires_gates": ["gate.persists_data"],
+      "message": "The product stores data, but its entities and fields are not defined."
+    },
+    {
+      "id": "crit.incoherent_stack",
+      "source": { "check": "dep.coherent" },
+      "when": { "options": ["incoherent"], "min_probability": 0.5 },
+      "message": "The chosen technologies do not work together or do not run on the target platform."
+    },
+    {
+      "id": "crit.too_many_open_decisions",
+      "source": { "check": "ready.open_decisions" },
+      "when": { "options": ["many"], "min_probability": 0.5 },
+      "message": "Too many important product or technical decisions are left unresolved."
+    }
+  ],
+  "critical_cap": 69,
+  "pass": {
+    "min_forge_score": 85,
+    "min_category_score": 60,
+    "allow_critical": false
+  },
+  "bands": [
+    { "id": "excellent", "min": 95, "label": "Ready to implement" },
+    { "id": "pass", "min": 85, "label": "Ready, with minor improvements possible" },
+    { "id": "needs_work", "min": 70, "label": "Needs targeted optimization" },
+    { "id": "weak", "min": 0, "label": "Needs a major rewrite" }
+  ],
+  "optimization": {
+    "mode_score": "forge_score_raw",
+    "modes": [
+      { "id": "major_rewrite", "min": 0, "max_exclusive": 70 },
+      { "id": "targeted", "min": 70, "max_exclusive": 85 },
+      { "id": "weak_categories_only", "min": 85, "max_exclusive": 95 },
+      { "id": "stop", "min": 95, "max_exclusive": null }
+    ],
+    "critical_forces_mode_at_least": "targeted",
+    "weak_category_below": 70,
+    "strong_category_at": 90,
+    "refine_category_below": 85,
+    "failing_check_below": 0.7,
+    "max_optimization_passes": 3,
+    "plateau_min_gain": 2,
+    "on_regression": "stop_and_keep_best",
+    "return_version": "best_forge_score",
+    "stop_conditions": [
+      "forge_score >= 95 and no critical failures",
+      "mode is weak_categories_only and no category scores below 85 and no critical failures",
+      "max_optimization_passes reached",
+      "forge_score gain versus previous version < plateau_min_gain and no critical failure was resolved",
+      "forge_score lower than previous version (regression)"
+    ]
+  }
+}

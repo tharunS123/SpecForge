@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/fixture-expected.schema.json",
+  "fixture_id": "team-standup-web",
+  "rubric_version": "0.1.0",
+  "expected_gates": {
+    "gate.has_ui": true,
+    "gate.has_user_accounts": true,
+    "gate.persists_data": true,
+    "gate.uses_network": true,
+    "gate.handles_sensitive_data": true
+  },
+  "min_explicit_requirements": 7,
+  "ordering": ["weak", "medium", "strong"],
+  "specs": {
+    "weak": {
+      "file": "spec-weak.md",
+      "band": "weak",
+      "forge_range": [5, 40],
+      "pass": false,
+      "expected_critical": ["crit.requirement_coverage", "crit.coverage_overall", "crit.no_testing", "crit.ui_states_missing", "crit.auth_states_missing", "crit.no_entities", "crit.too_many_open_decisions"],
+      "weakest_categories": ["testing", "data_model", "security", "edge_cases"],
+      "notes": "Stack named but nothing specified; no magic link, no team visibility rule, no retention; heavy scope creep (extra sign-in providers, analytics, AI summaries); open questions left as questions; a TBD placeholder."
+    },
+    "medium": {
+      "file": "spec-medium.md",
+      "band": "needs_work",
+      "forge_range": [55, 78],
+      "pass": false,
+      "expected_critical": [],
+      "weakest_categories": ["edge_cases", "testing", "security", "build_readiness"],
+      "notes": "All requirements listed and a coherent stack, but team creation and time zone are left open, auth failure/expiry states are missing, Slack failure behavior is only 'log the error', the webhook URL is stored unencrypted, and there are only 2 acceptance criteria. May fall below 70 if Jev reads the open decisions as 'many'."
+    },
+    "strong": {
+      "file": "spec-strong.md",
+      "band": "pass",
+      "forge_range": [85, 100],
+      "pass": true,
+      "expected_critical": [],
+      "weakest_categories": [],
+      "notes": "Every requirement has behavior and an AC; auth states, authorization, secrets, Slack failure/retry, retention, time zones, and validation all specified; 9 acceptance criteria."
+    }
+  }
+}

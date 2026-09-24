@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/evaluation-result.schema.json",
+  "title": "SpecForge evaluation result (normalized scorecard)",
+  "description": "What the scoring engine produces from one Jev response plus rule checks. Provider-neutral: nothing here depends on Jev specifically except the raw answer copies.",
+  "type": "object",
+  "required": ["rubric_version", "policy_version", "evaluator_model", "preflight", "gates", "requirements", "checks", "categories", "forge_score_raw", "forge_score", "critical_failures", "band", "pass", "next_mode"],
+  "additionalProperties": false,
+  "properties": {
+    "rubric_version": { "$ref": "#/$defs/semver" },
+    "policy_version": { "$ref": "#/$defs/semver" },
+    "evaluator_model": { "type": "string", "description": "Concrete model reported in the provider response." },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "preflight": {
+      "type": "object",
+      "required": ["spec_tokens_estimate", "sections_missing"],
+      "properties": {
+        "spec_tokens_estimate": { "type": "integer", "minimum": 0 },
+        "sections_missing": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "gates": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["noul", "applies"],
+        "properties": { "noul": { "$ref": "#/$defs/prob" }, "applies": { "type": "boolean" } }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "noul", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^R\\d+$" },
+          "text": { "type": "string" },
+          "noul": { "$ref": "#/$defs/prob" },
+          "status": { "enum": ["covered", "uncertain", "missing"] }
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "version", "category", "applicable", "points", "flags"],
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "integer", "minimum": 1 },
+          "category": { "type": "string" },
+          "applicable": { "type": "boolean" },
+          "points": { "oneOf": [{ "$ref": "#/$defs/prob" }, { "type": "null" }] },
+          "answer": { "description": "Raw provider answer or rule measurement, kept for audit." },
+          "flags": { "type": "array", "items": { "enum": ["uncertain", "low_confidence", "not_applicable", "gated_out", "insufficient_evidence"] } }
+        }
+      }
+    },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "weight", "applicable", "score"],
+        "properties": {
+          "id": { "type": "string" },
+          "weight": { "type": "number" },
+          "applicable": { "type": "boolean" },
+          "score": { "oneOf": [{ "type": "number", "minimum": 0, "maximum": 100 }, { "type": "null" }] }
+        }
+      }
+    },
+    "forge_score_raw": { "type": "number", "minimum": 0, "maximum": 100 },
+    "forge_score": { "type": "number", "minimum": 0, "maximum": 100, "description": "forge_score_raw after the critical-failure cap." },
+    "critical_failures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "message"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^crit\\.[a-z_]+$" },
+          "check": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "band": { "enum": ["excellent", "pass", "needs_work", "weak"] },
+    "pass": { "type": "boolean" },
+    "next_mode": { "enum": ["major_rewrite", "targeted", "weak_categories_only", "stop"] },
+    "usage": { "type": "object" }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "prob": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

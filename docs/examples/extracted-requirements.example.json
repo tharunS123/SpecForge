@@ -1,0 +1,70 @@
+{
+  "requirements": [
+    {
+      "id": "R1",
+      "kind": "explicit",
+      "text": "The app runs on iPhone.",
+      "source_quote": "iPhone expense tracker"
+    },
+    {
+      "id": "R2",
+      "kind": "explicit",
+      "text": "User can add an expense with an amount, a category, a date, and an optional note.",
+      "source_quote": "add expenses with an amount, a category, a date and an optional note"
+    },
+    {
+      "id": "R3",
+      "kind": "explicit",
+      "text": "User can edit an existing expense.",
+      "source_quote": "be able to edit or delete them"
+    },
+    {
+      "id": "R4",
+      "kind": "explicit",
+      "text": "User can delete an expense.",
+      "source_quote": "be able to edit or delete them"
+    },
+    {
+      "id": "R5",
+      "kind": "explicit",
+      "text": "The app shows the total spent in the current month.",
+      "source_quote": "Show the total for the current month"
+    },
+    {
+      "id": "R6",
+      "kind": "explicit",
+      "text": "The app shows a chart breaking down spending by category.",
+      "source_quote": "a breakdown by category as a chart"
+    },
+    {
+      "id": "R7",
+      "kind": "explicit",
+      "text": "User can set a monthly budget.",
+      "source_quote": "set a monthly budget"
+    },
+    {
+      "id": "R8",
+      "kind": "explicit",
+      "text": "The app warns the user when spending exceeds the monthly budget.",
+      "source_quote": "warn me when I go over it"
+    },
+    {
+      "id": "R9",
+      "kind": "explicit",
+      "text": "All data stays on the phone, with no account and no cloud storage.",
+      "source_quote": "My data should stay on my phone — no account, no cloud"
+    },
+    {
+      "id": "R10",
+      "kind": "explicit",
+      "text": "User can export a chosen month's expenses to a CSV file.",
+      "source_quote": "export a month's expenses to a CSV file"
+    },
+    {
+      "id": "R11",
+      "kind": "implied",
+      "text": "Expenses are saved between app launches.",
+      "source_quote": "I want to add expenses"
+    }
+  ]
+}

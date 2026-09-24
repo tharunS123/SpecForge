@@ -1,0 +1,665 @@
+{
+  "rubric_version": "0.1.0",
+  "policy_version": "0.1.0",
+  "evaluator_model": "jev-1.13.0",
+  "spec_version": 1,
+  "preflight": {
+    "spec_tokens_estimate": 822,
+    "sections_missing": []
+  },
+  "gates": {
+    "gate.has_ui": {
+      "noul": 0.98,
+      "applies": true
+    },
+    "gate.has_user_accounts": {
+      "noul": 0.03,
+      "applies": false
+    },
+    "gate.persists_data": {
+      "noul": 0.97,
+      "applies": true
+    },
+    "gate.uses_network": {
+      "noul": 0.05,
+      "applies": false
+    },
+    "gate.handles_sensitive_data": {
+      "noul": 0.81,
+      "applies": true
+    }
+  },
+  "requirements": [
+    {
+      "id": "R1",
+      "text": "The app runs on iPhone.",
+      "noul": 0.95,
+      "status": "covered"
+    },
+    {
+      "id": "R2",
+      "text": "User can add an expense with an amount, a category, a date, and an optional note.",
+      "noul": 0.93,
+      "status": "covered"
+    },
+    {
+      "id": "R3",
+      "text": "User can edit an existing expense.",
+      "noul": 0.88,
+      "status": "covered"
+    },
+    {
+      "id": "R4",
+      "text": "User can delete an expense.",
+      "noul": 0.9,
+      "status": "covered"
+    },
+    {
+      "id": "R5",
+      "text": "The app shows the total spent in the current month.",
+      "noul": 0.94,
+      "status": "covered"
+    },
+    {
+      "id": "R6",
+      "text": "The app shows a chart breaking down spending by category.",
+      "noul": 0.9,
+      "status": "covered"
+    },
+    {
+      "id": "R7",
+      "text": "User can set a monthly budget.",
+      "noul": 0.92,
+      "status": "covered"
+    },
+    {
+      "id": "R8",
+      "text": "The app warns the user when spending exceeds the monthly budget.",
+      "noul": 0.9,
+      "status": "covered"
+    },
+    {
+      "id": "R9",
+      "text": "All data stays on the phone, with no account and no cloud storage.",
+      "noul": 0.93,
+      "status": "covered"
+    },
+    {
+      "id": "R10",
+      "text": "User can export a chosen month's expenses to a CSV file.",
+      "noul": 0.62,
+      "status": "uncertain"
+    }
+  ],
+  "checks": [
+    {
+      "id": "req.explicit_coverage",
+      "version": 1,
+      "category": "requirements",
+      "applicable": true,
+      "points": 0.95,
+      "answer": {
+        "coverage_ratio": 0.95
+      },
+      "flags": []
+    },
+    {
+      "id": "req.coverage_overall",
+      "version": 1,
+      "category": "requirements",
+      "applicable": true,
+      "points": 0.8675,
+      "answer": {
+        "type": "choice",
+        "choice": "complete",
+        "probabilities": {
+          "complete": 0.55,
+          "minor_gaps": 0.4,
+          "major_gaps": 0.05,
+          "insufficient": 0
+        },
+        "confidence": 0.4
+      },
+      "flags": []
+    },
+    {
+      "id": "req.scope_creep",
+      "version": 1,
+      "category": "requirements",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.08
+      },
+      "flags": []
+    },
+    {
+      "id": "arch.components_defined",
+      "version": 1,
+      "category": "architecture",
+      "applicable": true,
+      "points": 0.685,
+      "answer": {
+        "type": "choice",
+        "choice": "partially_defined",
+        "probabilities": {
+          "well_defined": 0.3,
+          "partially_defined": 0.6,
+          "vague": 0.1,
+          "missing": 0
+        },
+        "confidence": 0.47
+      },
+      "flags": []
+    },
+    {
+      "id": "arch.data_flow",
+      "version": 1,
+      "category": "architecture",
+      "applicable": true,
+      "points": 0.52,
+      "answer": {
+        "type": "choice",
+        "choice": "partial",
+        "probabilities": {
+          "clear": 0.1,
+          "partial": 0.6,
+          "unclear": 0.3,
+          "missing": 0
+        },
+        "confidence": 0.47
+      },
+      "flags": []
+    },
+    {
+      "id": "arch.platform_fit",
+      "version": 1,
+      "category": "architecture",
+      "applicable": true,
+      "points": 0.96,
+      "answer": {
+        "type": "choice",
+        "choice": "fits",
+        "probabilities": {
+          "fits": 0.9,
+          "minor_mismatch": 0.1,
+          "major_mismatch": 0,
+          "insufficient_evidence": 0
+        },
+        "confidence": 0.87
+      },
+      "flags": []
+    },
+    {
+      "id": "impl.sections_present",
+      "version": 1,
+      "category": "implementation",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "sections_missing": []
+      },
+      "flags": []
+    },
+    {
+      "id": "impl.file_structure",
+      "version": 1,
+      "category": "implementation",
+      "applicable": true,
+      "points": 0.425,
+      "answer": {
+        "type": "choice",
+        "choice": "module_level",
+        "probabilities": {
+          "explicit_paths": 0,
+          "module_level": 0.5,
+          "vague": 0.4,
+          "missing": 0.1
+        },
+        "confidence": 0.33
+      },
+      "flags": [
+        "low_confidence"
+      ]
+    },
+    {
+      "id": "impl.ordered_steps",
+      "version": 1,
+      "category": "implementation",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.82
+      },
+      "flags": []
+    },
+    {
+      "id": "impl.guessing_required",
+      "version": 1,
+      "category": "implementation",
+      "applicable": true,
+      "points": 0.5333,
+      "answer": {
+        "type": "score",
+        "score": 1.6,
+        "legend": {
+          "0": "The agent would have to make most product and technical decisions itself.",
+          "1": "The agent would have to guess several important decisions, such as data structures, screen behavior, or libraries.",
+          "2": "The agent would only have to guess minor details, such as exact wording or spacing.",
+          "3": "The agent could implement it without guessing any meaningful decision."
+        },
+        "probabilities": {
+          "0": 0.05,
+          "1": 0.35,
+          "2": 0.55,
+          "3": 0.05
+        },
+        "confidence": 0.4
+      },
+      "flags": []
+    },
+    {
+      "id": "data.entities",
+      "version": 1,
+      "category": "data_model",
+      "applicable": true,
+      "points": 0.685,
+      "answer": {
+        "type": "choice",
+        "choice": "partial",
+        "probabilities": {
+          "complete": 0.3,
+          "partial": 0.7,
+          "names_only": 0,
+          "missing": 0
+        },
+        "confidence": 0.6
+      },
+      "flags": []
+    },
+    {
+      "id": "data.relationships",
+      "version": 1,
+      "category": "data_model",
+      "applicable": true,
+      "points": 0.45,
+      "answer": {
+        "type": "choice",
+        "choice": "partial",
+        "probabilities": {
+          "defined": 0.1,
+          "partial": 0.7,
+          "missing": 0.2,
+          "not_applicable": 0
+        },
+        "confidence": 0.6
+      },
+      "flags": []
+    },
+    {
+      "id": "data.persistence_migration",
+      "version": 1,
+      "category": "data_model",
+      "applicable": true,
+      "points": 0.45,
+      "answer": {
+        "type": "choice",
+        "choice": "storage_only",
+        "probabilities": {
+          "storage_and_migration": 0,
+          "storage_only": 0.9,
+          "missing": 0.1
+        },
+        "confidence": 0.85
+      },
+      "flags": []
+    },
+    {
+      "id": "ui.screens",
+      "version": 1,
+      "category": "ui_ux",
+      "applicable": true,
+      "points": 0.895,
+      "answer": {
+        "type": "choice",
+        "choice": "all_screens",
+        "probabilities": {
+          "all_screens": 0.7,
+          "most_screens": 0.3,
+          "few_screens": 0,
+          "missing": 0
+        },
+        "confidence": 0.6
+      },
+      "flags": []
+    },
+    {
+      "id": "ui.states",
+      "version": 1,
+      "category": "ui_ux",
+      "applicable": true,
+      "points": 0.475,
+      "answer": {
+        "type": "choice",
+        "choice": "some_states",
+        "probabilities": {
+          "all_states": 0.05,
+          "some_states": 0.85,
+          "missing": 0.1
+        },
+        "confidence": 0.77
+      },
+      "flags": []
+    },
+    {
+      "id": "ui.navigation",
+      "version": 1,
+      "category": "ui_ux",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.75
+      },
+      "flags": []
+    },
+    {
+      "id": "edge.error_handling",
+      "version": 1,
+      "category": "edge_cases",
+      "applicable": true,
+      "points": 0.375,
+      "answer": {
+        "type": "choice",
+        "choice": "generic",
+        "probabilities": {
+          "specific": 0,
+          "partial": 0.3,
+          "generic": 0.6,
+          "missing": 0.1
+        },
+        "confidence": 0.47
+      },
+      "flags": []
+    },
+    {
+      "id": "edge.network_offline",
+      "version": 1,
+      "category": "edge_cases",
+      "applicable": false,
+      "points": null,
+      "flags": [
+        "gated_out"
+      ]
+    },
+    {
+      "id": "edge.input_validation",
+      "version": 1,
+      "category": "edge_cases",
+      "applicable": true,
+      "points": 0.5,
+      "answer": {
+        "type": "noul",
+        "noul": 0.45
+      },
+      "flags": [
+        "uncertain"
+      ]
+    },
+    {
+      "id": "sec.auth_states",
+      "version": 1,
+      "category": "security",
+      "applicable": false,
+      "points": null,
+      "flags": [
+        "gated_out"
+      ]
+    },
+    {
+      "id": "sec.secrets_storage",
+      "version": 1,
+      "category": "security",
+      "applicable": false,
+      "points": null,
+      "answer": {
+        "type": "choice",
+        "choice": "not_applicable",
+        "probabilities": {
+          "specified": 0.05,
+          "partial": 0.05,
+          "unaddressed": 0.05,
+          "not_applicable": 0.85
+        },
+        "confidence": 0.8
+      },
+      "flags": [
+        "not_applicable"
+      ]
+    },
+    {
+      "id": "sec.data_privacy",
+      "version": 1,
+      "category": "security",
+      "applicable": true,
+      "points": 0.5,
+      "answer": {
+        "type": "choice",
+        "choice": "partial",
+        "probabilities": {
+          "specified": 0.1,
+          "partial": 0.8,
+          "missing": 0.1
+        },
+        "confidence": 0.7
+      },
+      "flags": []
+    },
+    {
+      "id": "test.strategy",
+      "version": 1,
+      "category": "testing",
+      "applicable": true,
+      "points": 0.405,
+      "answer": {
+        "type": "choice",
+        "choice": "minimal",
+        "probabilities": {
+          "comprehensive": 0,
+          "adequate": 0.3,
+          "minimal": 0.65,
+          "missing": 0.05
+        },
+        "confidence": 0.53
+      },
+      "flags": []
+    },
+    {
+      "id": "test.ac_testable",
+      "version": 1,
+      "category": "testing",
+      "applicable": true,
+      "points": 0.825,
+      "answer": {
+        "type": "choice",
+        "choice": "all_testable",
+        "probabilities": {
+          "all_testable": 0.5,
+          "mostly_testable": 0.5,
+          "vague": 0,
+          "none": 0
+        },
+        "confidence": 0.33
+      },
+      "flags": [
+        "low_confidence"
+      ]
+    },
+    {
+      "id": "test.ac_count",
+      "version": 1,
+      "category": "testing",
+      "applicable": true,
+      "points": 0.6,
+      "answer": {
+        "count": 3
+      },
+      "flags": []
+    },
+    {
+      "id": "dep.stack_specified",
+      "version": 1,
+      "category": "dependencies",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.95
+      },
+      "flags": []
+    },
+    {
+      "id": "dep.coherent",
+      "version": 1,
+      "category": "dependencies",
+      "applicable": true,
+      "points": 0.968,
+      "answer": {
+        "type": "choice",
+        "choice": "coherent",
+        "probabilities": {
+          "coherent": 0.92,
+          "minor_issues": 0.08,
+          "incoherent": 0,
+          "insufficient_evidence": 0
+        },
+        "confidence": 0.89
+      },
+      "flags": []
+    },
+    {
+      "id": "dep.contradictions",
+      "version": 1,
+      "category": "dependencies",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.1
+      },
+      "flags": []
+    },
+    {
+      "id": "ready.open_decisions",
+      "version": 1,
+      "category": "build_readiness",
+      "applicable": true,
+      "points": 0.76,
+      "answer": {
+        "type": "choice",
+        "choice": "minor",
+        "probabilities": {
+          "none": 0.2,
+          "minor": 0.7,
+          "some": 0.1,
+          "many": 0
+        },
+        "confidence": 0.6
+      },
+      "flags": []
+    },
+    {
+      "id": "ready.can_start",
+      "version": 1,
+      "category": "build_readiness",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "type": "noul",
+        "noul": 0.8
+      },
+      "flags": []
+    },
+    {
+      "id": "ready.no_placeholders",
+      "version": 1,
+      "category": "build_readiness",
+      "applicable": true,
+      "points": 1,
+      "answer": {
+        "matches": []
+      },
+      "flags": []
+    }
+  ],
+  "categories": [
+    {
+      "id": "requirements",
+      "weight": 15,
+      "applicable": true,
+      "score": 92.7
+    },
+    {
+      "id": "architecture",
+      "weight": 10,
+      "applicable": true,
+      "score": 72.17
+    },
+    {
+      "id": "implementation",
+      "weight": 12,
+      "applicable": true,
+      "score": 69.83
+    },
+    {
+      "id": "data_model",
+      "weight": 10,
+      "applicable": true,
+      "score": 52.83
+    },
+    {
+      "id": "ui_ux",
+      "weight": 10,
+      "applicable": true,
+      "score": 79
+    },
+    {
+      "id": "edge_cases",
+      "weight": 10,
+      "applicable": true,
+      "score": 43.75
+    },
+    {
+      "id": "security",
+      "weight": 8,
+      "applicable": true,
+      "score": 50
+    },
+    {
+      "id": "testing",
+      "weight": 12,
+      "applicable": true,
+      "score": 61.2
+    },
+    {
+      "id": "dependencies",
+      "weight": 5,
+      "applicable": true,
+      "score": 98.93
+    },
+    {
+      "id": "build_readiness",
+      "weight": 8,
+      "applicable": true,
+      "score": 88
+    }
+  ],
+  "forge_score_raw": 70.39,
+  "forge_score": 70.39,
+  "critical_failures": [],
+  "band": "needs_work",
+  "pass": false,
+  "next_mode": "targeted"
+}
