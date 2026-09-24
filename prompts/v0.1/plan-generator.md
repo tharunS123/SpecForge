@@ -1,7 +1,7 @@
 ---
 prompt_id: plan-generator
 version: 0.1.0
-model: claude-opus-5-5
+model: configurable (OPENROUTER_MODEL)
 output: Markdown specification using the SpecForge section template
 placeholders: [user_request, requirements_json]
 ---

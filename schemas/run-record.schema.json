@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/run-record.schema.json",
+  "title": "SpecForge run record (Export run)",
+  "description": "Everything one browser run produced: the idea, extracted requirements, every spec version with its evaluation and the gap report that drove the next version. Phase 1 has no database; Phase 3 can import these.",
+  "type": "object",
+  "required": ["run_record_version", "exported_at", "idea", "requirements", "dropped_requirements", "spec_versions", "best_version", "stop_reason"],
+  "additionalProperties": false,
+  "properties": {
+    "run_record_version": { "const": "0.1.0" },
+    "exported_at": { "type": "string", "format": "date-time" },
+    "idea": { "type": "string", "minLength": 1 },
+    "requirements": { "type": "array", "items": { "$ref": "#/$defs/requirement" } },
+    "dropped_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["requirement", "reason"],
+        "properties": { "requirement": { "$ref": "#/$defs/requirement" }, "reason": { "type": "string" } }
+      }
+    },
+    "extractor": {
+      "type": "object",
+      "required": ["model", "prompt_version"],
+      "properties": { "model": { "type": "string" }, "prompt_version": { "type": "string" } }
+    },
+    "spec_versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["version", "content", "created_at", "finish_reason"],
+        "additionalProperties": false,
+        "properties": {
+          "version": { "type": "integer", "minimum": 1 },
+          "content": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "finish_reason": { "type": ["string", "null"] },
+          "model": { "type": "string" },
+          "prompt_version": { "type": "string" },
+          "evaluation": { "$ref": "evaluation-result.schema.json" },
+          "evaluator": {
+            "type": "object",
+            "required": ["name", "model", "isStandIn"],
+            "properties": { "name": { "type": "string" }, "model": { "type": "string" }, "isStandIn": { "type": "boolean" } }
+          },
+          "gap_report": { "$ref": "gap-report.schema.json" }
+        }
+      }
+    },
+    "best_version": { "type": ["integer", "null"] },
+    "stop_reason": { "type": ["string", "null"] }
+  },
+  "$defs": {
+    "requirement": {
+      "type": "object",
+      "required": ["id", "kind", "text", "source_quote"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^R\\d+$" },
+        "kind": { "enum": ["explicit", "implied"] },
+        "text": { "type": "string" },
+        "source_quote": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 ---
 prompt_id: requirements-extractor
 version: 0.1.0
-model: claude-opus-5-5
+model: configurable (OPENROUTER_MODEL)
 output: JSON matching schemas/extracted-requirements.schema.json
 placeholders: [user_request]
 ---

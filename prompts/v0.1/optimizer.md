@@ -1,7 +1,7 @@
 ---
 prompt_id: optimizer
 version: 0.1.0
-model: claude-opus-5-5
+model: configurable (OPENROUTER_MODEL)
 output: Complete replacement Markdown specification in the SpecForge section template
 placeholders: [original_request, current_spec, spec_version, forge_score, forge_score_raw, mode, mode_instructions, critical_list, weak_list, strong_list, uncovered_requirements_list]
 input_schema: schemas/gap-report.schema.json
