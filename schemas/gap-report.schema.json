@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/gap-report.schema.json",
+  "title": "Gap report (input to the Claude optimizer)",
+  "description": "Built by code from an evaluation result; rendered into prompts/v0.1/optimizer.md.",
+  "type": "object",
+  "required": ["original_request", "current_spec", "spec_version", "forge_score", "forge_score_raw", "mode", "critical", "weak", "strong", "uncovered_requirements"],
+  "additionalProperties": false,
+  "properties": {
+    "original_request": { "type": "string" },
+    "current_spec": { "type": "string" },
+    "spec_version": { "type": "integer", "minimum": 1 },
+    "forge_score": { "type": "number" },
+    "forge_score_raw": { "type": "number" },
+    "mode": { "enum": ["major_rewrite", "targeted", "weak_categories_only"] },
+    "critical": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "message", "fix_hint"],
+        "properties": { "id": { "type": "string" }, "message": { "type": "string" }, "fix_hint": { "type": "string" } }
+      }
+    },
+    "weak": {
+      "type": "array",
+      "description": "Categories below the mode's threshold (70, or 85 in weak_categories_only mode), lowest first.",
+      "items": {
+        "type": "object",
+        "required": ["category", "name", "score", "failing_checks"],
+        "properties": {
+          "category": { "type": "string" },
+          "name": { "type": "string" },
+          "score": { "type": "number" },
+          "failing_checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "points", "fix_hint"],
+              "properties": {
+                "id": { "type": "string" },
+                "points": { "type": "number" },
+                "answer_summary": { "type": "string" },
+                "fix_hint": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "strong": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "name", "score"],
+        "properties": { "category": { "type": "string" }, "name": { "type": "string" }, "score": { "type": "number" } }
+      }
+    },
+    "uncovered_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": { "id": { "type": "string" }, "text": { "type": "string" }, "status": { "enum": ["uncertain", "missing"] } }
+      }
+    }
+  }
+}

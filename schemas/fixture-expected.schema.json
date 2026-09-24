@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/fixture-expected.schema.json",
+  "title": "Expected evaluation outcomes for a calibration fixture",
+  "description": "Hand-labelled hypotheses. Phase 1 compares real Jev-based scores against these to calibrate thresholds and weights.",
+  "type": "object",
+  "required": ["fixture_id", "rubric_version", "expected_gates", "min_explicit_requirements", "ordering", "specs"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "fixture_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "rubric_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "expected_gates": {
+      "type": "object",
+      "additionalProperties": { "type": "boolean" },
+      "propertyNames": { "pattern": "^gate\\.[a-z_]+$" }
+    },
+    "min_explicit_requirements": { "type": "integer", "minimum": 1 },
+    "ordering": {
+      "type": "array",
+      "description": "Spec labels from lowest to highest expected Forge Score.",
+      "items": { "enum": ["weak", "medium", "strong"] }
+    },
+    "specs": {
+      "type": "object",
+      "required": ["weak", "medium", "strong"],
+      "additionalProperties": false,
+      "properties": {
+        "weak": { "$ref": "#/$defs/specExpectation" },
+        "medium": { "$ref": "#/$defs/specExpectation" },
+        "strong": { "$ref": "#/$defs/specExpectation" }
+      }
+    }
+  },
+  "$defs": {
+    "specExpectation": {
+      "type": "object",
+      "required": ["file", "band", "forge_range", "pass", "expected_critical", "notes"],
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string" },
+        "band": { "enum": ["excellent", "pass", "needs_work", "weak"] },
+        "forge_range": { "type": "array", "prefixItems": [{ "type": "number" }, { "type": "number" }], "minItems": 2, "maxItems": 2 },
+        "pass": { "type": "boolean" },
+        "expected_critical": { "type": "array", "items": { "type": "string", "pattern": "^crit\\.[a-z_]+$" } },
+        "weakest_categories": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

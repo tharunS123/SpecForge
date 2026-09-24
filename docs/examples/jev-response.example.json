@@ -1,0 +1,318 @@
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "gate_has_ui_v1": {
+      "type": "noul",
+      "noul": 0.98
+    },
+    "gate_has_user_accounts_v1": {
+      "type": "noul",
+      "noul": 0.03
+    },
+    "gate_persists_data_v1": {
+      "type": "noul",
+      "noul": 0.97
+    },
+    "gate_uses_network_v1": {
+      "type": "noul",
+      "noul": 0.05
+    },
+    "gate_handles_sensitive_data_v1": {
+      "type": "noul",
+      "noul": 0.81
+    },
+    "req_r1_v1": {
+      "type": "noul",
+      "noul": 0.95
+    },
+    "req_r2_v1": {
+      "type": "noul",
+      "noul": 0.93
+    },
+    "req_r3_v1": {
+      "type": "noul",
+      "noul": 0.88
+    },
+    "req_r4_v1": {
+      "type": "noul",
+      "noul": 0.9
+    },
+    "req_r5_v1": {
+      "type": "noul",
+      "noul": 0.94
+    },
+    "req_r6_v1": {
+      "type": "noul",
+      "noul": 0.9
+    },
+    "req_r7_v1": {
+      "type": "noul",
+      "noul": 0.92
+    },
+    "req_r8_v1": {
+      "type": "noul",
+      "noul": 0.9
+    },
+    "req_r9_v1": {
+      "type": "noul",
+      "noul": 0.93
+    },
+    "req_r10_v1": {
+      "type": "noul",
+      "noul": 0.62
+    },
+    "req_coverage_overall_v1": {
+      "type": "choice",
+      "choice": "complete",
+      "probabilities": {
+        "complete": 0.55,
+        "minor_gaps": 0.4,
+        "major_gaps": 0.05,
+        "insufficient": 0
+      },
+      "confidence": 0.4
+    },
+    "req_scope_creep_v1": {
+      "type": "noul",
+      "noul": 0.08
+    },
+    "arch_components_defined_v1": {
+      "type": "choice",
+      "choice": "partially_defined",
+      "probabilities": {
+        "well_defined": 0.3,
+        "partially_defined": 0.6,
+        "vague": 0.1,
+        "missing": 0
+      },
+      "confidence": 0.47
+    },
+    "arch_data_flow_v1": {
+      "type": "choice",
+      "choice": "partial",
+      "probabilities": {
+        "clear": 0.1,
+        "partial": 0.6,
+        "unclear": 0.3,
+        "missing": 0
+      },
+      "confidence": 0.47
+    },
+    "arch_platform_fit_v1": {
+      "type": "choice",
+      "choice": "fits",
+      "probabilities": {
+        "fits": 0.9,
+        "minor_mismatch": 0.1,
+        "major_mismatch": 0,
+        "insufficient_evidence": 0
+      },
+      "confidence": 0.87
+    },
+    "impl_file_structure_v1": {
+      "type": "choice",
+      "choice": "module_level",
+      "probabilities": {
+        "explicit_paths": 0,
+        "module_level": 0.5,
+        "vague": 0.4,
+        "missing": 0.1
+      },
+      "confidence": 0.33
+    },
+    "impl_ordered_steps_v1": {
+      "type": "noul",
+      "noul": 0.82
+    },
+    "impl_guessing_required_v1": {
+      "type": "score",
+      "score": 1.6,
+      "legend": {
+        "0": "The agent would have to make most product and technical decisions itself.",
+        "1": "The agent would have to guess several important decisions, such as data structures, screen behavior, or libraries.",
+        "2": "The agent would only have to guess minor details, such as exact wording or spacing.",
+        "3": "The agent could implement it without guessing any meaningful decision."
+      },
+      "probabilities": {
+        "0": 0.05,
+        "1": 0.35,
+        "2": 0.55,
+        "3": 0.05
+      },
+      "confidence": 0.4
+    },
+    "data_entities_v1": {
+      "type": "choice",
+      "choice": "partial",
+      "probabilities": {
+        "complete": 0.3,
+        "partial": 0.7,
+        "names_only": 0,
+        "missing": 0
+      },
+      "confidence": 0.6
+    },
+    "data_relationships_v1": {
+      "type": "choice",
+      "choice": "partial",
+      "probabilities": {
+        "defined": 0.1,
+        "partial": 0.7,
+        "missing": 0.2,
+        "not_applicable": 0
+      },
+      "confidence": 0.6
+    },
+    "data_persistence_migration_v1": {
+      "type": "choice",
+      "choice": "storage_only",
+      "probabilities": {
+        "storage_and_migration": 0,
+        "storage_only": 0.9,
+        "missing": 0.1
+      },
+      "confidence": 0.85
+    },
+    "ui_screens_v1": {
+      "type": "choice",
+      "choice": "all_screens",
+      "probabilities": {
+        "all_screens": 0.7,
+        "most_screens": 0.3,
+        "few_screens": 0,
+        "missing": 0
+      },
+      "confidence": 0.6
+    },
+    "ui_states_v1": {
+      "type": "choice",
+      "choice": "some_states",
+      "probabilities": {
+        "all_states": 0.05,
+        "some_states": 0.85,
+        "missing": 0.1
+      },
+      "confidence": 0.77
+    },
+    "ui_navigation_v1": {
+      "type": "noul",
+      "noul": 0.75
+    },
+    "edge_error_handling_v1": {
+      "type": "choice",
+      "choice": "generic",
+      "probabilities": {
+        "specific": 0,
+        "partial": 0.3,
+        "generic": 0.6,
+        "missing": 0.1
+      },
+      "confidence": 0.47
+    },
+    "edge_network_offline_v1": {
+      "type": "choice",
+      "choice": "missing",
+      "probabilities": {
+        "specified": 0,
+        "partial": 0.1,
+        "missing": 0.9
+      },
+      "confidence": 0.85
+    },
+    "edge_input_validation_v1": {
+      "type": "noul",
+      "noul": 0.45
+    },
+    "sec_auth_states_v1": {
+      "type": "choice",
+      "choice": "missing",
+      "probabilities": {
+        "complete": 0,
+        "partial": 0.05,
+        "missing": 0.95
+      },
+      "confidence": 0.92
+    },
+    "sec_secrets_storage_v1": {
+      "type": "choice",
+      "choice": "not_applicable",
+      "probabilities": {
+        "specified": 0.05,
+        "partial": 0.05,
+        "unaddressed": 0.05,
+        "not_applicable": 0.85
+      },
+      "confidence": 0.8
+    },
+    "sec_data_privacy_v1": {
+      "type": "choice",
+      "choice": "partial",
+      "probabilities": {
+        "specified": 0.1,
+        "partial": 0.8,
+        "missing": 0.1
+      },
+      "confidence": 0.7
+    },
+    "test_strategy_v1": {
+      "type": "choice",
+      "choice": "minimal",
+      "probabilities": {
+        "comprehensive": 0,
+        "adequate": 0.3,
+        "minimal": 0.65,
+        "missing": 0.05
+      },
+      "confidence": 0.53
+    },
+    "test_ac_testable_v1": {
+      "type": "choice",
+      "choice": "all_testable",
+      "probabilities": {
+        "all_testable": 0.5,
+        "mostly_testable": 0.5,
+        "vague": 0,
+        "none": 0
+      },
+      "confidence": 0.33
+    },
+    "dep_stack_specified_v1": {
+      "type": "noul",
+      "noul": 0.95
+    },
+    "dep_coherent_v1": {
+      "type": "choice",
+      "choice": "coherent",
+      "probabilities": {
+        "coherent": 0.92,
+        "minor_issues": 0.08,
+        "incoherent": 0,
+        "insufficient_evidence": 0
+      },
+      "confidence": 0.89
+    },
+    "dep_contradictions_v1": {
+      "type": "noul",
+      "noul": 0.1
+    },
+    "ready_open_decisions_v1": {
+      "type": "choice",
+      "choice": "minor",
+      "probabilities": {
+        "none": 0.2,
+        "minor": 0.7,
+        "some": 0.1,
+        "many": 0
+      },
+      "confidence": 0.6
+    },
+    "ready_can_start_v1": {
+      "type": "noul",
+      "noul": 0.8
+    }
+  },
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0
+  }
+}

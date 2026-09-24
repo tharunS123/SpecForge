@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/policy.schema.json",
+  "title": "SpecForge scoring and optimization policy",
+  "type": "object",
+  "required": ["policy_version", "rubric_version", "category_weights", "gates", "noul", "choice", "score", "requirements", "preflight", "critical_rules", "critical_cap", "pass", "bands", "optimization"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "policy_version": { "$ref": "#/$defs/semver" },
+    "rubric_version": { "$ref": "#/$defs/semver" },
+    "description": { "type": "string" },
+    "category_weights": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "number", "exclusiveMinimum": 0 }
+    },
+    "gates": {
+      "type": "object",
+      "required": ["applies_at"],
+      "properties": { "applies_at": { "$ref": "#/$defs/prob" } }
+    },
+    "noul": {
+      "type": "object",
+      "required": ["pass_at", "fail_at", "pass_points", "fail_points", "uncertain_points"],
+      "properties": {
+        "pass_at": { "$ref": "#/$defs/prob" },
+        "fail_at": { "$ref": "#/$defs/prob" },
+        "pass_points": { "$ref": "#/$defs/prob" },
+        "fail_points": { "$ref": "#/$defs/prob" },
+        "uncertain_points": { "$ref": "#/$defs/prob" }
+      }
+    },
+    "choice": {
+      "type": "object",
+      "required": ["scoring", "not_applicable_at", "low_confidence_below"],
+      "properties": {
+        "scoring": { "const": "expected_value" },
+        "not_applicable_at": { "$ref": "#/$defs/prob" },
+        "low_confidence_below": { "$ref": "#/$defs/prob" }
+      }
+    },
+    "score": {
+      "type": "object",
+      "required": ["scoring", "low_confidence_below"],
+      "properties": {
+        "scoring": { "const": "linear" },
+        "low_confidence_below": { "$ref": "#/$defs/prob" }
+      }
+    },
+    "requirements": {
+      "type": "object",
+      "required": ["max_extracted", "evaluate_kinds", "require_source_quote_match"],
+      "properties": {
+        "max_extracted": { "type": "integer", "minimum": 1 },
+        "evaluate_kinds": { "type": "array", "items": { "enum": ["explicit", "implied"] } },
+        "require_source_quote_match": { "type": "boolean" }
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "required": ["max_spec_tokens", "token_estimate", "required_sections", "section_heading_pattern"],
+      "properties": {
+        "max_spec_tokens": { "type": "integer", "minimum": 1 },
+        "token_estimate": { "const": "chars_div_4" },
+        "required_sections": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "section_heading_pattern": { "type": "string", "pattern": "\\{section\\}" }
+      }
+    },
+    "critical_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "when", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^crit\\.[a-z_]+$" },
+          "source": {
+            "oneOf": [
+              { "type": "object", "required": ["check"], "additionalProperties": false, "properties": { "check": { "type": "string" } } },
+              { "type": "object", "required": ["preflight"], "additionalProperties": false, "properties": { "preflight": { "enum": ["spec_tokens"] } } }
+            ]
+          },
+          "when": {
+            "oneOf": [
+              { "type": "object", "required": ["above"], "additionalProperties": false, "properties": { "above": { "type": "number" } } },
+              { "type": "object", "required": ["ratio_below"], "additionalProperties": false, "properties": { "ratio_below": { "$ref": "#/$defs/prob" } } },
+              {
+                "type": "object",
+                "required": ["options", "min_probability"],
+                "additionalProperties": false,
+                "properties": {
+                  "options": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+                  "min_probability": { "$ref": "#/$defs/prob" }
+                }
+              }
+            ]
+          },
+          "requires_gates": { "type": "array", "items": { "type": "string", "pattern": "^gate\\.[a-z_]+$" } },
+          "message": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "critical_cap": { "type": "number", "minimum": 0, "maximum": 100 },
+    "pass": {
+      "type": "object",
+      "required": ["min_forge_score", "min_category_score", "allow_critical"],
+      "properties": {
+        "min_forge_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "min_category_score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "allow_critical": { "type": "boolean" }
+      }
+    },
+    "bands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "min", "label"],
+        "properties": {
+          "id": { "type": "string" },
+          "min": { "type": "number", "minimum": 0, "maximum": 100 },
+          "label": { "type": "string" }
+        }
+      }
+    },
+    "optimization": {
+      "type": "object",
+      "required": ["mode_score", "modes", "critical_forces_mode_at_least", "weak_category_below", "strong_category_at", "refine_category_below", "failing_check_below", "max_optimization_passes", "plateau_min_gain", "on_regression", "return_version", "stop_conditions"],
+      "properties": {
+        "mode_score": { "enum": ["forge_score_raw", "forge_score"] },
+        "modes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "min", "max_exclusive"],
+            "properties": {
+              "id": { "$ref": "#/$defs/mode" },
+              "min": { "type": "number" },
+              "max_exclusive": { "type": ["number", "null"] }
+            }
+          }
+        },
+        "critical_forces_mode_at_least": { "$ref": "#/$defs/mode" },
+        "weak_category_below": { "type": "number" },
+        "strong_category_at": { "type": "number" },
+        "refine_category_below": { "type": "number" },
+        "failing_check_below": { "$ref": "#/$defs/prob" },
+        "max_optimization_passes": { "type": "integer", "minimum": 0 },
+        "plateau_min_gain": { "type": "number", "minimum": 0 },
+        "on_regression": { "enum": ["stop_and_keep_best", "continue"] },
+        "return_version": { "enum": ["best_forge_score", "latest"] },
+        "stop_conditions": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "prob": { "type": "number", "minimum": 0, "maximum": 1 },
+    "mode": { "enum": ["major_rewrite", "targeted", "weak_categories_only", "stop"] }
+  }
+}

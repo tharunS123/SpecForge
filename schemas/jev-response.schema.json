@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/jev-response.schema.json",
+  "title": "Jev POST /v1/systemone response",
+  "description": "Mirrors https://docs.typesafe.ai/api. Answers come back under the same keys as the request's questions.",
+  "type": "object",
+  "required": ["model", "answers"],
+  "properties": {
+    "model": { "type": "string", "description": "Concrete model that served the request, e.g. jev-1.13.0. Always log it." },
+    "answers": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": ["type", "noul"],
+            "properties": {
+              "type": { "const": "noul" },
+              "noul": { "$ref": "#/$defs/prob" }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "choice", "probabilities", "confidence"],
+            "properties": {
+              "type": { "const": "choice" },
+              "choice": { "type": "string" },
+              "probabilities": { "type": "object", "additionalProperties": { "$ref": "#/$defs/prob" } },
+              "confidence": { "$ref": "#/$defs/prob" }
+            }
+          },
+          {
+            "type": "object",
+            "required": ["type", "score", "probabilities", "confidence"],
+            "properties": {
+              "type": { "const": "score" },
+              "score": { "type": "number", "minimum": 0 },
+              "legend": { "type": "object" },
+              "probabilities": {
+                "type": "object",
+                "propertyNames": { "pattern": "^\\d+$" },
+                "additionalProperties": { "$ref": "#/$defs/prob" }
+              },
+              "confidence": { "$ref": "#/$defs/prob" }
+            }
+          }
+        ]
+      }
+    },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "input_tokens": { "type": "integer", "minimum": 0 },
+        "output_tokens": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "$defs": {
+    "prob": { "type": "number", "minimum": 0, "maximum": 1 }
+  }
+}

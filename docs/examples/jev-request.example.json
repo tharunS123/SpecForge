@@ -1,0 +1,410 @@
+{
+  "state": {
+    "user_request": "Build me an iPhone expense tracker. I want to add expenses with an amount, a category, a date and an optional note, and be able to edit or delete them. Show the total for the current month and a breakdown by category as a chart. Let me set a monthly budget and warn me when I go over it. My data should stay on my phone — no account, no cloud. I also want to export a month's expenses to a CSV file.",
+    "specification": "# Expense Tracker — Implementation Specification\n\n## 1. Overview\nA native iPhone app for recording personal expenses, seeing the current month's total and category breakdown, tracking a monthly budget, and exporting a month to CSV. All data stays on the device.\n\n## 2. Scope\nIn scope: add/edit/delete expenses, monthly total, category chart, monthly budget warning, CSV export.\nOut of scope: accounts, cloud sync, multiple currencies, recurring expenses.\n\n## 3. Requirements\n- R1: User can add an expense with amount, category, date, and optional note.\n- R2: User can edit an expense.\n- R3: User can delete an expense.\n- R4: App shows the total for the current month.\n- R5: App shows a category breakdown chart for the current month.\n- R6: User can set a monthly budget.\n- R7: App warns the user when the month's total exceeds the budget.\n- R8: Data is stored only on the device; no account or cloud.\n- R9: User can export a month's expenses as CSV.\n\n## 4. Architecture\nSwiftUI views on top of a SwiftData store. Views read expenses with `@Query`. A `BudgetService` compares the monthly total with the budget. A `CSVExporter` builds the CSV file and hands it to the system share sheet.\n\n## 5. Tech stack\nSwift 5.10, SwiftUI, SwiftData (iOS 17+), Swift Charts for the chart. No third-party dependencies.\n\n## 6. Data model\n- `Expense`: id (UUID), amount (Decimal), category (Category), date (Date), note (String?).\n- `Category`: name (String), colorHex (String). Default categories: Food, Transport, Housing, Entertainment, Other.\n- Budget: stored as a Decimal in UserDefaults.\n\n## 7. Screens & UX states\n- **Expenses tab** — list of this month's expenses, newest first, with the month total at the top. Swipe to delete, tap to edit. \"+\" button opens the add sheet. If there are no expenses, show \"No expenses yet\".\n- **Add/Edit sheet** — amount, category picker, date picker, note field, Save and Cancel.\n- **Summary tab** — month total, budget progress bar, and a pie chart by category. Red banner when over budget.\n- **Settings tab** — monthly budget field and \"Export this month as CSV\" button.\n\n## 8. Implementation plan\n1. Create the Xcode project with SwiftData and the tab bar.\n2. Add the `Expense` and `Category` models and seed default categories.\n3. Build the Expenses tab and Add/Edit sheet.\n4. Build the Summary tab with Swift Charts.\n5. Add the budget setting and warning.\n6. Add CSV export through `ShareLink`.\n\n## 9. Errors & edge cases\nShow an alert if saving fails. The amount must be greater than zero.\n\n## 10. Security & privacy\nAll data is stored locally in SwiftData; nothing is sent over the network.\n\n## 11. Testing & acceptance criteria\nUnit tests for `BudgetService` and `CSVExporter` with XCTest.\n- AC-1: Given no expenses, when the user adds an expense of 12.50 in Food, then it appears in the list and the month total shows 12.50. (R1, R4)\n- AC-2: Given a budget of 100 and expenses totalling 90, when the user adds an expense of 20, then the Summary tab shows the over-budget banner. (R6, R7)\n- AC-3: When the user taps Export, a CSV file with one row per expense this month is offered in the share sheet. (R9)\n\n## 12. Assumptions & open questions\n- Assumption: currency comes from the device locale.\n- Assumption: weeks and months follow the device calendar.\n"
+  },
+  "model": "jev-1.13.0",
+  "questions": {
+    "gate_has_ui_v1": {
+      "type": "noul",
+      "instructions": "Does the product described in the user's request or the specification include a user interface with screens or pages that a person interacts with?",
+      "criteria": {
+        "true": "A mobile app, desktop app, website, or web app with screens or pages.",
+        "false": "A command-line tool, library, API-only service, background job, or script with no screens."
+      }
+    },
+    "gate_has_user_accounts_v1": {
+      "type": "noul",
+      "instructions": "Does the product described in the user's request or the specification require people to sign in or have user accounts?",
+      "criteria": {
+        "true": "Users sign up, sign in, or are identified by an account, including third-party sign-in.",
+        "false": "Anyone can use the product without signing in, or it runs locally with no accounts."
+      }
+    },
+    "gate_persists_data_v1": {
+      "type": "noul",
+      "instructions": "Does the product need to store data that must still exist after the app, device, or server restarts?",
+      "criteria": {
+        "true": "It saves user content, records, settings, or history to a database, file, or on-device storage.",
+        "false": "It keeps nothing between runs, or only reads data owned by another system."
+      }
+    },
+    "gate_uses_network_v1": {
+      "type": "noul",
+      "instructions": "Do the product's core features depend on network communication, such as its own backend, syncing, or a third-party API?",
+      "criteria": {
+        "true": "Core features call a server, sync data, send notifications, or call external APIs.",
+        "false": "Core features work fully offline on one device or machine."
+      }
+    },
+    "gate_handles_sensitive_data_v1": {
+      "type": "noul",
+      "instructions": "Does the product collect or store sensitive data, such as personal information, financial records, health data, credentials, or private messages?",
+      "criteria": {
+        "true": "It stores data that would harm or embarrass a user if leaked, such as emails, spending, health, or private text.",
+        "false": "It only handles public or non-personal data."
+      }
+    },
+    "req_r1_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "The app runs on iPhone."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r2_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "User can add an expense with an amount, a category, a date, and an optional note."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r3_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "User can edit an existing expense."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r4_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "User can delete an expense."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r5_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "The app shows the total spent in the current month."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r6_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "The app shows a chart breaking down spending by category."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r7_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "User can set a monthly budget."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r8_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "The app warns the user when spending exceeds the monthly budget."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r9_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "All data stays on the phone, with no account and no cloud storage."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_r10_v1": {
+      "type": "noul",
+      "instructions": {
+        "question": "Does the specification clearly address this requirement from the user's request?",
+        "requirement": "User can export a chosen month's expenses to a CSV file."
+      },
+      "criteria": {
+        "true": "The specification contains concrete behavior, screens, data, or steps that satisfy the requirement.",
+        "false": "The requirement is missing, only mentioned in passing, or contradicted."
+      }
+    },
+    "req_coverage_overall_v1": {
+      "type": "choice",
+      "instructions": "How completely does the specification cover everything the user asked for in their request?",
+      "criteria": {
+        "complete": "Every feature and constraint the user asked for is specified.",
+        "minor_gaps": "Everything important is specified; only small details the user mentioned are missing.",
+        "major_gaps": "At least one feature or constraint the user clearly asked for is missing or only mentioned in passing.",
+        "insufficient": "Much of what the user asked for is missing, or the specification describes a different product."
+      }
+    },
+    "req_scope_creep_v1": {
+      "type": "noul",
+      "instructions": "Does the specification add major features that the user did not ask for and that are not needed to deliver what they asked for?",
+      "criteria": {
+        "true": "It adds substantial unrequested features, such as social sharing, accounts, AI features, or extra platforms.",
+        "false": "Everything it specifies serves the user's request, including necessary supporting work like error handling and tests."
+      }
+    },
+    "arch_components_defined_v1": {
+      "type": "choice",
+      "instructions": "How clearly does the specification define the system's main components, such as app layers, services, or modules, and what each one is responsible for?",
+      "criteria": {
+        "well_defined": "Each main component is named and its responsibility is stated.",
+        "partially_defined": "Components are named, but some responsibilities or boundaries are unclear.",
+        "vague": "Architecture is described only in general terms, such as 'a frontend and a backend'.",
+        "missing": "No architecture is described."
+      }
+    },
+    "arch_data_flow_v1": {
+      "type": "choice",
+      "instructions": "How clearly does the specification describe how data moves through the system, from a user action to storage or the network and back to what the user sees?",
+      "criteria": {
+        "clear": "The path of data for the main flows is described step by step.",
+        "partial": "Some flows are described, but others must be inferred.",
+        "unclear": "Data flow is only implied.",
+        "missing": "Data flow is not described at all."
+      }
+    },
+    "arch_platform_fit_v1": {
+      "type": "choice",
+      "instructions": "Does the architecture fit the platform and constraints stated in the user's request?",
+      "criteria": {
+        "fits": "The architecture matches the requested platform and respects every stated constraint.",
+        "minor_mismatch": "Mostly fits, but one choice is awkward for the platform or bends a stated constraint.",
+        "major_mismatch": "It targets the wrong platform or breaks a stated constraint, such as adding a server when data must stay on the device.",
+        "insufficient_evidence": "The specification says too little about the architecture to judge."
+      }
+    },
+    "impl_file_structure_v1": {
+      "type": "choice",
+      "instructions": "How specifically does the specification describe the project's files and folders?",
+      "criteria": {
+        "explicit_paths": "It lists concrete file or folder paths and what each contains.",
+        "module_level": "It names modules or folders but not the files inside them.",
+        "vague": "It only mentions the structure in general terms.",
+        "missing": "Project structure is not described."
+      }
+    },
+    "impl_ordered_steps_v1": {
+      "type": "noul",
+      "instructions": "Does the specification give an ordered sequence of implementation steps, where each step produces something that can be checked before moving to the next?",
+      "criteria": {
+        "true": "Numbered build steps, each with a concrete output or check.",
+        "false": "No ordered steps, or steps with no way to tell that one is done."
+      }
+    },
+    "impl_guessing_required_v1": {
+      "type": "score",
+      "instructions": "How much would an AI coding agent have to guess to implement this specification?",
+      "criteria": [
+        "The agent would have to make most product and technical decisions itself.",
+        "The agent would have to guess several important decisions, such as data structures, screen behavior, or libraries.",
+        "The agent would only have to guess minor details, such as exact wording or spacing.",
+        "The agent could implement it without guessing any meaningful decision."
+      ]
+    },
+    "data_entities_v1": {
+      "type": "choice",
+      "instructions": "How completely does the specification define the data entities the product works with, including their fields and field types?",
+      "criteria": {
+        "complete": "Every entity is listed with its fields, field types, and required or optional status.",
+        "partial": "Entities and most fields are listed, but some types or fields are missing.",
+        "names_only": "Entities are named, but their fields are not defined.",
+        "missing": "No data entities are defined."
+      }
+    },
+    "data_relationships_v1": {
+      "type": "choice",
+      "instructions": "How clearly does the specification define the relationships between data entities, such as one-to-many links and what happens to related records when one is deleted?",
+      "criteria": {
+        "defined": "Relationships and delete behavior are stated.",
+        "partial": "Relationships are stated or implied, but delete behavior or cardinality is unclear.",
+        "missing": "There are several entities but no relationships are described.",
+        "not_applicable": "The product has only one entity or stores no related data."
+      }
+    },
+    "data_persistence_migration_v1": {
+      "type": "choice",
+      "instructions": "How does the specification handle where data is stored and how the stored format will change in future versions?",
+      "criteria": {
+        "storage_and_migration": "It names the storage technology and states how schema changes or migrations are handled.",
+        "storage_only": "It names the storage technology but says nothing about changing the format later.",
+        "missing": "It does not say where or how data is stored."
+      }
+    },
+    "ui_screens_v1": {
+      "type": "choice",
+      "instructions": "How completely does the specification describe the product's screens or pages, including what each shows and what the user can do there?",
+      "criteria": {
+        "all_screens": "Every screen or page is described with its content and available actions.",
+        "most_screens": "Most screens are described; a few are missing or thin.",
+        "few_screens": "Only one or two screens are described, or descriptions are very thin.",
+        "missing": "No screens are described."
+      }
+    },
+    "ui_states_v1": {
+      "type": "choice",
+      "instructions": "Does the specification define what screens show while loading, when there is no data yet, and when an error occurs?",
+      "criteria": {
+        "all_states": "Loading, empty, and error states are described for the screens that need them.",
+        "some_states": "Some of these states are described, but others are missing.",
+        "missing": "Loading, empty, and error states are not described."
+      }
+    },
+    "ui_navigation_v1": {
+      "type": "noul",
+      "instructions": "Does the specification describe how the user moves between screens, including where the app starts and how they go back?",
+      "criteria": {
+        "true": "The starting screen and the transitions between screens are stated.",
+        "false": "Navigation between screens must be guessed."
+      }
+    },
+    "edge_error_handling_v1": {
+      "type": "choice",
+      "instructions": "How well does the specification define what happens when operations fail, such as a save failing, a request failing, or data being corrupt?",
+      "criteria": {
+        "specific": "Each likely failure has a stated user-visible behavior and recovery.",
+        "partial": "Some failures are specified; others are not.",
+        "generic": "It only says errors should be handled, without saying how.",
+        "missing": "Failures are not mentioned."
+      }
+    },
+    "edge_network_offline_v1": {
+      "type": "choice",
+      "instructions": "Does the specification define behavior when the network is slow, unavailable, or a request times out?",
+      "criteria": {
+        "specified": "Offline, timeout, and retry behavior is defined, including any sync conflicts.",
+        "partial": "Some network failure behavior is defined.",
+        "missing": "Network failure behavior is not described."
+      }
+    },
+    "edge_input_validation_v1": {
+      "type": "noul",
+      "instructions": "Does the specification state validation rules for user input, such as required fields, formats, and limits, and what the user sees when input is invalid?",
+      "criteria": {
+        "true": "Validation rules and invalid-input behavior are stated for the main inputs.",
+        "false": "Input validation is missing or only mentioned in general terms."
+      }
+    },
+    "sec_auth_states_v1": {
+      "type": "choice",
+      "instructions": "How completely does the specification define sign-in behavior, including sign-up, sign-in, sign-out, session expiry, and failed sign-in?",
+      "criteria": {
+        "complete": "All of these sign-in states and transitions are specified.",
+        "partial": "Sign-in is specified, but some states such as expiry or failure are missing.",
+        "missing": "Authentication behavior is not described."
+      }
+    },
+    "sec_secrets_storage_v1": {
+      "type": "choice",
+      "instructions": "How does the specification handle secrets such as API keys, access tokens, and passwords?",
+      "criteria": {
+        "specified": "It states where each secret is stored and that secrets never ship in client code or logs.",
+        "partial": "Some secrets are addressed, but storage for others is unclear.",
+        "unaddressed": "The product uses secrets, but the specification does not say how they are stored.",
+        "not_applicable": "The product uses no API keys, tokens, or credentials."
+      }
+    },
+    "sec_data_privacy_v1": {
+      "type": "choice",
+      "instructions": "How well does the specification protect sensitive user data, including what is collected, where it is stored, who can access it, and how it is deleted?",
+      "criteria": {
+        "specified": "Collection, storage, access control, and deletion of sensitive data are all stated.",
+        "partial": "Some of these are stated.",
+        "missing": "Sensitive data protection is not addressed."
+      }
+    },
+    "test_strategy_v1": {
+      "type": "choice",
+      "instructions": "Which best describes the testing strategy in the specification?",
+      "criteria": {
+        "comprehensive": "It names test types and tools, and says what is tested at each level for the core flows and failure cases.",
+        "adequate": "It names test types and covers the core flows, but leaves out failure cases or tooling.",
+        "minimal": "It mentions testing only briefly, such as 'add unit tests'.",
+        "missing": "There is no testing strategy."
+      }
+    },
+    "test_ac_testable_v1": {
+      "type": "choice",
+      "instructions": "How testable are the acceptance criteria in the specification?",
+      "criteria": {
+        "all_testable": "Each acceptance criterion has a concrete starting condition, action, and observable expected result.",
+        "mostly_testable": "Most acceptance criteria are concrete, but some are vague.",
+        "vague": "Acceptance criteria exist but are subjective or unmeasurable, such as 'works well'.",
+        "none": "There are no acceptance criteria."
+      }
+    },
+    "dep_stack_specified_v1": {
+      "type": "noul",
+      "instructions": "Does the specification name the specific languages, frameworks, and key libraries to use, rather than general categories like 'a database'?",
+      "criteria": {
+        "true": "Concrete technologies are named, such as Swift with SwiftUI and SwiftData, or Next.js with PostgreSQL.",
+        "false": "Technologies are missing or only described generically."
+      }
+    },
+    "dep_coherent_v1": {
+      "type": "choice",
+      "instructions": "Do the technologies chosen in the specification work together and suit the target platform?",
+      "criteria": {
+        "coherent": "The technologies are compatible with each other and with the platform.",
+        "minor_issues": "Mostly compatible, with one questionable or unnecessary choice.",
+        "incoherent": "Some technologies do not work together or cannot run on the target platform.",
+        "insufficient_evidence": "Too few technologies are named to judge."
+      }
+    },
+    "dep_contradictions_v1": {
+      "type": "noul",
+      "instructions": "Does the specification contradict itself, for example by choosing different technologies, data formats, or behaviors for the same thing in different sections?",
+      "criteria": {
+        "true": "At least one section conflicts with another.",
+        "false": "All sections are consistent."
+      }
+    },
+    "ready_open_decisions_v1": {
+      "type": "choice",
+      "instructions": "How many product or technical decisions does the specification leave unresolved that a builder would need answered before implementing?",
+      "criteria": {
+        "none": "No meaningful decisions are left open; assumptions are stated as decisions.",
+        "minor": "Only small decisions are open, and they do not block implementation.",
+        "some": "A few important decisions are open, such as storage, sign-in method, or core behavior.",
+        "many": "Many important decisions are open, or the specification is mostly questions."
+      }
+    },
+    "ready_can_start_v1": {
+      "type": "noul",
+      "instructions": "Could an AI coding agent start implementing this specification right now, without first asking the user a product question?",
+      "criteria": {
+        "true": "The agent can begin step one immediately.",
+        "false": "The agent would first need answers from the user."
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://specforge.dev/schemas/extracted-requirements.schema.json",
+  "title": "Requirements extracted from the user's request",
+  "description": "Output of prompts/v0.1/requirements-extractor.md. Code must verify each source_quote is a verbatim substring of the user request and drop any that are not.",
+  "type": "object",
+  "required": ["requirements"],
+  "additionalProperties": false,
+  "properties": {
+    "requirements": {
+      "type": "array",
+      "maxItems": 25,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "text", "source_quote"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^R\\d+$" },
+          "kind": { "enum": ["explicit", "implied"] },
+          "text": { "type": "string", "minLength": 1, "maxLength": 300 },
+          "source_quote": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

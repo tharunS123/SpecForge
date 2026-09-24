@@ -1,0 +1,43 @@
+{
+  "$schema": "../../../schemas/fixture-expected.schema.json",
+  "fixture_id": "expense-tracker-ios",
+  "rubric_version": "0.1.0",
+  "expected_gates": {
+    "gate.has_ui": true,
+    "gate.has_user_accounts": false,
+    "gate.persists_data": true,
+    "gate.uses_network": false,
+    "gate.handles_sensitive_data": true
+  },
+  "min_explicit_requirements": 8,
+  "ordering": ["weak", "medium", "strong"],
+  "specs": {
+    "weak": {
+      "file": "spec-weak.md",
+      "band": "weak",
+      "forge_range": [10, 45],
+      "pass": false,
+      "expected_critical": ["crit.requirement_coverage", "crit.coverage_overall", "crit.no_entities", "crit.ui_states_missing"],
+      "weakest_categories": ["data_model", "testing", "edge_cases", "ui_ux"],
+      "notes": "Typical one-shot plan: feature names without behavior, no fields, no states, TBD/TODO placeholders, and scope creep ('iCloud sync later') that contradicts 'no cloud'. Edit/delete, over-budget warning, and on-device-only constraint are not addressed."
+    },
+    "medium": {
+      "file": "spec-medium.md",
+      "band": "needs_work",
+      "forge_range": [65, 80],
+      "pass": false,
+      "expected_critical": [],
+      "weakest_categories": ["edge_cases", "security", "data_model", "testing"],
+      "notes": "Correct template and full requirement list, but thin: only an empty state for one screen, generic error handling, no migration plan, no file tree, 3 acceptance criteria. Used as the worked example in docs/evaluation-system-v0.1.md."
+    },
+    "strong": {
+      "file": "spec-strong.md",
+      "band": "pass",
+      "forge_range": [85, 100],
+      "pass": true,
+      "expected_critical": [],
+      "weakest_categories": [],
+      "notes": "Everything specified: fields and types, migration plan, every screen with loading/empty/error states, validation table, file tree with checked build steps, 8 Given/When/Then acceptance criteria mapped to R-ids."
+    }
+  }
+}
