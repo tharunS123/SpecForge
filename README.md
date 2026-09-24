@@ -6,7 +6,7 @@ Turn a rough software idea into an implementation specification an AI coding age
 idea → Claude writes spec V1 → Jev evaluates → code scores it → Claude rewrites → Jev re-evaluates → best spec
 ```
 
-Claude plans and rewrites. Jev ([TypeSafe](https://docs.typesafe.ai)) acts only as a bounded critic: it answers atomic yes/no, multiple-choice, and rubric questions. All counting, scoring, and pass/fail logic lives in SpecForge's own code.
+A language model plans and rewrites (Claude long-term; a free OpenRouter model in Phase 1). Jev ([TypeSafe](https://docs.typesafe.ai)) acts only as a bounded critic: it answers atomic yes/no, multiple-choice, and rubric questions. All counting, scoring, and pass/fail logic lives in SpecForge's own code.
 
 ## Status
 
